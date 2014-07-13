@@ -1,0 +1,28 @@
+{
+  "name": "zepto-autocomplete",
+  "version": "0.0.0",
+  "authors": [
+    "Yugal Jindle <yugalmait@gmail.com>"
+  ],
+  "description": "Autocomplete plugin for zepto, inspired by jquery-ui autocomplete",
+  "main": "zepto.autocomplete.js",
+  "keywords": [
+    "zepto",
+    "autocomplete",
+    "zepto-autocomplete",
+    "typeahead",
+    "zepto-typeahead"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/yugal/zepto-autocomplete",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "zepto": "~1.1.4"
+  }
+}

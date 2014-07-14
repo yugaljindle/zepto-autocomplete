@@ -2,7 +2,6 @@
  * 
  * Zepto-Autocomplete
  * @author Yugal Jindle
- * @date   Jul 10, 2014
  * 
  */
 
@@ -69,9 +68,9 @@
                 $optionsContainerDiv[0].scrollTop = 0;
                 $optionsContainerDiv.hide();
             }
-            function chooseOption(event) {
+            function chooseOption(event, optIndex) {
                 var settings = $this[0]._autoCompleteData.settings,
-                    optIndex = $(event.target).closest('.autocomplete-opt').attr('data-opt-index'),
+                    optIndex = optIndex || $(event.target).closest('.autocomplete-opt').attr('data-opt-index'),
                     option = settings.data[optIndex];
                 $this.val(option.toString());
                 closeOptionsDiv();
@@ -131,7 +130,7 @@
                         break;
                     case 13:  // Return
                         if($optionsContainerDiv.css('display') !== 'none') {
-                            $this.val($currentOpt.html());
+                            chooseOption(null, $currentOpt.attr('data-opt-index'));
                             resetOptionsDiv();
                         }
                         break;

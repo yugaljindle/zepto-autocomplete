@@ -15,6 +15,8 @@
                     minLength: 1,
                     maxCount: 100,
                     extraClass: '',
+                    appendTo: '',
+                    position: true,
                     sort: function(data) {
                         return data.sort();
                     },
@@ -38,19 +40,22 @@
             }
 
             function createOptionsDiv() {
-                var $optionsContainerDiv,
+                var position, $appendDiv, $optionsContainerDiv;
+                $optionsContainerDiv = $('<div>');
+                if(settings.position) {
                     position = {
                         left: $this.offset().left,
                         top: $this.offset().top + $this.height()
                     };
+                    $optionsContainerDiv.css('position', 'absolute').css('top', position.top).css('left', position.left).css('zIndex', 1000);
+                }
                 // Configure $optionsContainerDiv
-                $optionsContainerDiv = $('<div>');
-                $optionsContainerDiv.addClass('autocomplete-options-container').addClass(settings.extraClass).css('zIndex', 1000);  // Adds class autocomplete-options-container
-                $optionsContainerDiv.css('position', 'absolute').css('top', position.top).css('left', position.left).css('border', '1px solid black').css('background', 'white');
+                $optionsContainerDiv.addClass('autocomplete-options-container').addClass(settings.extraClass);  // Adds class autocomplete-options-container
                 $this.attr('data-autocomplete', 'true');
                 $optionsContainerDiv.on('mousedown.autocomplete', 'div', chooseOption);
                 $optionsContainerDiv.hide();
-                $('body').append($optionsContainerDiv);
+                $appendDiv = (settings.appendTo)? $(settings.appendTo):$(body);
+                $appendDiv.append($optionsContainerDiv);
                 settings.data = settings.sort(settings.data);
                 // Save
                 $this[0]._autoCompleteData = {

@@ -28,7 +28,7 @@
 						return item.toString().toLowerCase().indexOf(query.toLowerCase()) !== -1;
 					},
 					renderOption: function(item) {
-						return '<div>'+item.toString()+'</div>';
+						return item.toString();
 					}
 				};
 				storedData = $this[0]._autoCompleteData;

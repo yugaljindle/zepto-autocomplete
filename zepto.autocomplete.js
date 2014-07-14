@@ -74,6 +74,7 @@
                     optIndex = $(event.target).closest('.autocomplete-opt').attr('data-opt-index'),
                     option = settings.data[optIndex];
                 $this.val(option.toString());
+                closeOptionsDiv();
                 settings.selectOption(option);
             }
             function changeCurrentOpt($other) {
@@ -129,7 +130,7 @@
                         }
                         break;
                     case 13:  // Return
-                        if($optionsContainerDiv.is(':visible')) {
+                        if($optionsContainerDiv.css('display') !== 'none') {
                             $this.val($currentOpt.html());
                             resetOptionsDiv();
                         }

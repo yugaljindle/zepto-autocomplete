@@ -1,11 +1,12 @@
 /**
- * 
  * Zepto-Autocomplete
  * @author Yugal Jindle
- * 
+ * @repo   https://github.com/yugal/zepto-autocomplete.git
  */
 
 (function($) {
+    'use strict';
+
     var methods = {
         init: function(settings) {
             var $currentOpt,
@@ -13,7 +14,7 @@
                 settingsDefaults = {
                     data: [],
                     minLength: 1,
-                    maxCount: 100,
+                    maxCount: Infinity,
                     extraClass: '',
                     appendTo: '',
                     position: true,
@@ -26,18 +27,13 @@
                     renderOption: function(option) {
                         return option.toString();
                     },
-                    selectOption: function(option) {}
-                };
+                    selectOption: function(option) {
+                        return option.toString(); // Returned value updates the input
+                    }
+                },
                 storedData = $this[0]._autoCompleteData;
 
             settings = $.extend(settingsDefaults, settings);
-            // if not initialized
-            if (!storedData) {
-                createOptionsDiv();
-                return $this.each(function() {
-                    $this.bind('focus.autocomplete', computeOptions).bind('keyup.autocomplete', keyHandler).bind('blur.autocomplete', closeOptionsDiv);
-                });
-            }
 
             function createOptionsDiv() {
                 var position, $appendDiv, $optionsContainerDiv;
@@ -54,7 +50,7 @@
                 $this.attr('data-autocomplete', 'true');
                 $optionsContainerDiv.on('mousedown.autocomplete', 'div', chooseOption);
                 $optionsContainerDiv.hide();
-                $appendDiv = (settings.appendTo)? $(settings.appendTo):$(body);
+                $appendDiv = (settings.appendTo)? $(settings.appendTo):$('body');
                 $appendDiv.append($optionsContainerDiv);
                 settings.data = settings.sort(settings.data);
                 // Save
@@ -64,7 +60,7 @@
                 };
             }
             function resetOptionsDiv() {
-                $optionsContainerDiv = $this[0]._autoCompleteData.$optionsContainerDiv;
+                var $optionsContainerDiv = $this[0]._autoCompleteData.$optionsContainerDiv;
                 $optionsContainerDiv.hide();
                 $optionsContainerDiv.empty();
             }
@@ -74,12 +70,15 @@
                 $optionsContainerDiv.hide();
             }
             function chooseOption(event, optIndex) {
-                var settings = $this[0]._autoCompleteData.settings,
-                    optIndex = optIndex || $(event.target).closest('.autocomplete-opt').attr('data-opt-index'),
-                    option = settings.data[optIndex];
-                $this.val(option.toString());
+                var value, option,
+                    settings = $this[0]._autoCompleteData.settings;
+                optIndex = optIndex || $(event.target).closest('.autocomplete-opt').attr('data-opt-index');
+                option = settings.data[optIndex];
+                value = settings.selectOption(option);
+                if(value) {
+                    $this.val(option.toString());
+                }
                 closeOptionsDiv();
-                settings.selectOption(option);
             }
             function changeCurrentOpt($other) {
                 if($currentOpt) {
@@ -118,7 +117,6 @@
             }
             function keyHandler(event) {
                 var prev, next,
-                    settings = $this[0]._autoCompleteData.settings,
                     $optionsContainerDiv = $this[0]._autoCompleteData.$optionsContainerDiv;
                 switch (event.keyCode) {
                     case 38: // Up
@@ -144,17 +142,26 @@
                         break;
                 }
             }
+
+            // if not initialized
+            if (!storedData) {
+                createOptionsDiv();
+                return $this.each(function() {
+                    $this.bind('focus.autocomplete', computeOptions).bind('keyup.autocomplete', keyHandler).bind('blur.autocomplete', closeOptionsDiv);
+                });
+            }
         },
         destroy: function() {
             return this.each(function() {
-                $this = $(this);
+                var $this = $(this);
                 $this.unbind('.autocomplete');
                 $this[0]._autoCompleteData.$optionsContainerDiv.remove();
                 delete $this[0]._autoCompleteData;
             });
         },
         add: function(option) {
-            var options,
+            var $this = $(this),
+                options,
                 settings = $this[0]._autoCompleteData.settings;
             $this = this;
             // create unique
@@ -183,5 +190,4 @@
             $.error(method + ' :: Not supported');
         }
     };
-
 })(Zepto || jQuery);

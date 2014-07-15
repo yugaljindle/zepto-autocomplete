@@ -1,5 +1,5 @@
 #Zepto-Autocomplete
-===================
+-------------------
 
 Inspired from [jquery-ui](http://api.jqueryui.com/) autocomplete widget, zepto-autocomplete is light yet full-featured autocomplete plugin compatible with zepto. It works equally well with jquery, as expected.
 

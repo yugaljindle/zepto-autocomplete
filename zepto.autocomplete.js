@@ -75,7 +75,7 @@
                 optIndex = optIndex || $(event.target).closest('.autocomplete-opt').attr('data-opt-index');
                 option = settings.data[optIndex];
                 value = settings.selectOption(option);
-                if(value) {
+                if(value !== undefined) {
                     $this.val(option.toString());
                 }
                 closeOptionsDiv();

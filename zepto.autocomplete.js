@@ -76,7 +76,7 @@
                 option = settings.data[optIndex];
                 value = settings.selectOption(option);
                 if(value !== undefined) {
-                    $this.val(option.toString());
+                    $this.val(value);
                 }
                 closeOptionsDiv();
             }

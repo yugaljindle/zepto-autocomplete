@@ -68,7 +68,6 @@
                 var $optionsContainerDiv = $this[0]._autoCompleteData.$optionsContainerDiv;
                 $optionsContainerDiv[0].scrollTop = 0;
                 $optionsContainerDiv.hide();
-                $this.focus();
             }
             function chooseOption(event, optIndex) {
                 var value, option,
@@ -80,6 +79,7 @@
                     $this.val(value);
                 }
                 closeOptionsDiv();
+                $this.focus();
             }
             function changeCurrentOpt($other) {
                 if($currentOpt) {

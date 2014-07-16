@@ -144,6 +144,7 @@
             // if not initialized
             if (!storedData) {
                 createOptionsDiv();
+                computeOptions();
                 return $this.each(function() {
                     $this.bind('focus.autocomplete', computeOptions).bind('keyup.autocomplete', keyHandler).bind('blur.autocomplete', resetOptionsDiv);
                 });

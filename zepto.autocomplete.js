@@ -64,11 +64,6 @@
                 $optionsContainerDiv.hide();
                 $optionsContainerDiv.empty();
             }
-            function closeOptionsDiv() {
-                var $optionsContainerDiv = $this[0]._autoCompleteData.$optionsContainerDiv;
-                $optionsContainerDiv[0].scrollTop = 0;
-                $optionsContainerDiv.hide();
-            }
             function chooseOption(event, optIndex) {
                 var value, option,
                     settings = $this[0]._autoCompleteData.settings;
@@ -78,8 +73,10 @@
                 if(value !== undefined) {
                     $this.val(value);
                 }
-                closeOptionsDiv();
-                $this.focus();
+                resetOptionsDiv();
+                setTimeout(function() {
+                    $this.focus();
+                });
             }
             function changeCurrentOpt($other) {
                 if($currentOpt) {
@@ -134,8 +131,7 @@
                         break;
                     case 13:  // Return
                         if($optionsContainerDiv.css('display') !== 'none') {
-                            chooseOption(null, $currentOpt.attr('data-opt-index'));
-                            resetOptionsDiv();
+                            chooseOption(event, $currentOpt.attr('data-opt-index'));
                         }
                         break;
                     default:
@@ -148,7 +144,7 @@
             if (!storedData) {
                 createOptionsDiv();
                 return $this.each(function() {
-                    $this.bind('focus.autocomplete', computeOptions).bind('keyup.autocomplete', keyHandler).bind('blur.autocomplete', closeOptionsDiv);
+                    $this.bind('focus.autocomplete', computeOptions).bind('keyup.autocomplete', keyHandler).bind('blur.autocomplete', resetOptionsDiv);
                 });
             }
         },

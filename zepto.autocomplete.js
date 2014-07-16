@@ -165,9 +165,8 @@
                 delete $this[0]._autoCompleteData;
             });
         },
-        add: function(option) {
-            var options,
-                $this = this, // selected jquery object
+        add: function(options) {
+            var $this = this, // selected jquery object
                 settings = $this[0]._autoCompleteData.settings;
             // create unique
             function unique(arr) {
@@ -179,18 +178,23 @@
                 });
                 return uniqArr;
             }
-            // option or options
-            options = (option instanceof Array)? option:[options];
+            // options ~ Array
+            options = (options instanceof Array)? options:[options];
             options = unique(options.concat(settings.data));
-            settings.data = settings.sort(settings.data);
+            settings.data = settings.sort(options);
         },
-        remove: function(option) {
-            var $this = this, // selected jquery object
-                settings = $this[0]._autoCompleteData.settings,
+        remove: function(options) {
+            var index,
+                $this = this, // selected jquery object
+                settings = $this[0]._autoCompleteData.settings;
+            // options ~ Array
+            options = (options instanceof Array)? options:[options];
+            $.each(options, function(idx, option) {
                 index = settings.lookUp(settings.data, option);
-            if(index !== -1) {
-                settings.data.splice(index, 1);
-            }
+                if(index !== -1) {
+                    settings.data.splice(index, 1);
+                }
+            });
         }
     };
 

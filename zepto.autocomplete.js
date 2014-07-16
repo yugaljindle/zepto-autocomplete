@@ -24,6 +24,13 @@
                     matcher: function(query, option) {
                         return option.toString().toLowerCase().indexOf(query.toLowerCase()) !== -1;
                     },
+                    lookUp: function(data, option) {
+                        var options = [];
+                        $.each(data, function(idx, val) {
+                            options.push(val.toString());
+                        });
+                        return options.indexOf(option.toString());
+                    },
                     renderOption: function(option) {
                         return option.toString();
                     },
@@ -159,10 +166,9 @@
             });
         },
         add: function(option) {
-            var $this = $(this),
-                options,
+            var options,
+                $this = this, // selected jquery object
                 settings = $this[0]._autoCompleteData.settings;
-            $this = this;
             // create unique
             function unique(arr) {
                 var uniqArr = [];
@@ -177,6 +183,14 @@
             options = (option instanceof Array)? option:[options];
             options = unique(options.concat(settings.data));
             settings.data = settings.sort(settings.data);
+        },
+        remove: function(option) {
+            var $this = this, // selected jquery object
+                settings = $this[0]._autoCompleteData.settings,
+                index = settings.lookUp(settings.data, option);
+            if(index !== -1) {
+                settings.data.splice(index, 1);
+            }
         }
     };
 

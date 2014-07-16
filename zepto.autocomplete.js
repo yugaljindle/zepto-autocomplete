@@ -73,7 +73,7 @@
                 if(value !== undefined) {
                     $this.val(value);
                 }
-                resetOptionsDiv();
+                computeOptions();
                 setTimeout(function() {
                     $this.focus();
                 });
@@ -92,14 +92,15 @@
                     value = $this.val(),
                     $optionsContainerDiv = $this[0]._autoCompleteData.$optionsContainerDiv,
                     settings = $this[0]._autoCompleteData.settings;
-                resetOptionsDiv();
+                $optionsContainerDiv.empty();
                 // Honor minLength
                 if(value.length<settings.minLength) {
+                    $optionsContainerDiv.hide();
                     return;
                 }
                 for(var i=0; i<settings.data.length && $divs.length<=settings.maxCount; i++) {
                     option = settings.data[i];
-                    if (value && settings.matcher(value, option)) {
+                    if (settings.matcher(value, option)) {
                         // Adds class autocomplete-opt
                         $optionDiv = $('<div class="autocomplete-opt"></div>');
                         $optionDiv.attr('data-opt-index', i);

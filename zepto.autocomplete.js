@@ -117,7 +117,6 @@
                 if ($divs.length>0) {
                     $optionsContainerDiv.append($divs);
                     $optionsContainerDiv.show();
-                    changeCurrentOpt($optionsContainerDiv.children().eq(0));
                 }
             }
             function keyHandler(event) {
@@ -125,13 +124,23 @@
                     $optionsContainerDiv = $this[0]._autoCompleteData.$optionsContainerDiv;
                 switch (event.keyCode) {
                     case 38: // Up
-                        prev = $currentOpt.prev();
+                        if(!$currentOpt) {
+                            changeCurrentOpt($optionsContainerDiv.children().eq(0));
+                            prev = $currentOpt;
+                        } else {
+                            prev = $currentOpt.prev();
+                        }
                         if(prev && prev.hasClass('autocomplete-opt')) {
                             changeCurrentOpt(prev);
                         }
                         break;
                     case 40: // Down
-                        next = $currentOpt.next();
+                        if(!$currentOpt) {
+                            changeCurrentOpt($optionsContainerDiv.children().eq(0));
+                            next = $currentOpt;
+                        } else {
+                            next = $currentOpt.next();
+                        }
                         if(next && next.hasClass('autocomplete-opt')) {
                             changeCurrentOpt(next);
                         }

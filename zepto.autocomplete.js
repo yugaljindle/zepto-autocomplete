@@ -69,7 +69,6 @@
             function resetOptionsDiv() {
                 var $optionsContainerDiv = $this[0]._autoCompleteData.$optionsContainerDiv;
                 $optionsContainerDiv.hide();
-                $optionsContainerDiv.empty();
             }
             function chooseOption(event, optIndex) {
                 var value, option,

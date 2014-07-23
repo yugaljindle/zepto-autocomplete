@@ -34,8 +34,11 @@
                     renderOption: function(option) {
                         return option.toString();
                     },
-                    selectOption: function(option) {
+                    onOptionSelect: function(option) {
                         return option.toString(); // Returned value updates the input
+                    },
+                    onBlur: function($optionsContainerDiv) {
+                        $optionsContainerDiv.hide();
                     }
                 },
                 storedData = $this[0]._autoCompleteData;
@@ -66,16 +69,17 @@
                     $optionsContainerDiv: $optionsContainerDiv
                 };
             }
-            function resetOptionsDiv() {
-                var $optionsContainerDiv = $this[0]._autoCompleteData.$optionsContainerDiv;
-                $optionsContainerDiv.hide();
+            function onBlur() {
+                var $optionsContainerDiv = $this[0]._autoCompleteData.$optionsContainerDiv,
+                    settings = $this[0]._autoCompleteData.settings;
+                settings.onBlur($optionsContainerDiv);
             }
             function chooseOption(event, optIndex) {
                 var value, option,
                     settings = $this[0]._autoCompleteData.settings;
                 optIndex = optIndex || $(event.target).closest('.autocomplete-opt').attr('data-opt-index');
                 option = settings.data[optIndex];
-                value = settings.selectOption(option);
+                value = settings.onOptionSelect(option);
                 if(value !== undefined) {
                     $this.val(value);
                 }
@@ -161,7 +165,7 @@
                 createOptionsDiv();
                 computeOptions();
                 return $this.each(function() {
-                    $this.bind('focus.autocomplete', computeOptions).bind('keyup.autocomplete', keyHandler).bind('blur.autocomplete', resetOptionsDiv);
+                    $this.bind('focus.autocomplete', computeOptions).bind('keyup.autocomplete', keyHandler).bind('blur.autocomplete', onBlur);
                 });
             }
         },

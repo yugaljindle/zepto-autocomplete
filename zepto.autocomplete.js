@@ -10,16 +10,18 @@
     var methods = {
         init: function(settings) {
             var $currentOpt,
-                $this = this, // selected jquery object
+                $this = this, // selected zepto/jquery object
                 settingsDefaults = {
                     data: [],
+                    dataMethod: undefined,
                     minLength: 1,
                     maxCount: Infinity,
                     extraClass: '',
                     appendTo: '',
                     position: true,
                     sort: function(data) {
-                        return data.sort();
+                        // Skip sorting if data received from `dataMethod`
+                        return (this.dataMethod instanceof Function)? data:data.sort();
                     },
                     matcher: function(query, option) {
                         return option.toString().toLowerCase().indexOf(query.toLowerCase()) !== -1;
@@ -97,30 +99,41 @@
             }
             function computeOptions() {
                 var option,
+                    callback,
                     $optionDiv,
-                    $divs = $(), // List with jquery methods
-                    value = $this.val(),
+                    $divs = $(), // List with zepto/jQuery methods
+                    query = $this.val(),
                     $optionsContainerDiv = $this[0]._autoCompleteData.$optionsContainerDiv,
                     settings = $this[0]._autoCompleteData.settings;
-                $optionsContainerDiv.empty();
+                $optionsContainerDiv.empty(); // No events on `options` (safe)
                 // Honor minLength
-                if(value.length<settings.minLength) {
+                if(query.length<settings.minLength) {
                     $optionsContainerDiv.hide();
                     return;
                 }
-                for(var i=0; i<settings.data.length && $divs.length<=settings.maxCount; i++) {
-                    option = settings.data[i];
-                    if (settings.matcher(value, option)) {
-                        // Adds class autocomplete-opt
-                        $optionDiv = $('<div class="autocomplete-opt"></div>');
-                        $optionDiv.attr('data-opt-index', i);
-                        $optionDiv.append(settings.renderOption(option));
-                        $divs = $divs.add($optionDiv);
+                // Compute callback
+                callback = function(data) {
+                    settings.data = settings.sort(data);
+                    for(var i=0; i<data.length && $divs.length<=settings.maxCount; i++) {
+                        option = data[i];
+                        // Don't match if data received from `dataMethod`
+                        if (settings.dataMethod instanceof Function || settings.matcher(query, option)) {
+                            // Adds class autocomplete-opt
+                            $optionDiv = $('<div class="autocomplete-opt"></div>');
+                            $optionDiv.attr('data-opt-index', i);
+                            $optionDiv.append(settings.renderOption(option));
+                            $divs = $divs.add($optionDiv);
+                        }
                     }
-                }
-                if ($divs.length>0) {
-                    $optionsContainerDiv.append($divs);
-                    $optionsContainerDiv.show();
+                    if ($divs.length>0) {
+                        $optionsContainerDiv.append($divs);
+                        $optionsContainerDiv.show();
+                    }
+                };
+                if(settings.dataMethod instanceof Function) {
+                    settings.dataMethod(query, callback);
+                } else {
+                    callback(settings.data);
                 }
             }
             function keyHandler(event) {

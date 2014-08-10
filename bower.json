@@ -1,10 +1,10 @@
 {
   "name": "zepto-autocomplete",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "authors": [
     "Yugal Jindle <yugalmait@gmail.com>"
   ],
-  "description": "Autocomplete plugin for zepto, inspired by jquery-ui autocomplete",
+  "description": "Full featured autocomplete plugin native to zepto and works equally well with jquery",
   "main": "zepto.autocomplete.js",
   "keywords": [
     "zepto",

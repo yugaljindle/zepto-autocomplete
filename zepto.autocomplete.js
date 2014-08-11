@@ -138,6 +138,8 @@
                     if ($divs.length>0) {
                         $optionsContainerDiv.append($divs);
                         open();
+                    } else {
+                        close();
                     }
                 };
                 if(settings.dataMethod instanceof Function) {

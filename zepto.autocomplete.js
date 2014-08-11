@@ -10,7 +10,7 @@
     var methods = {
         init: function(settings) {
             var $currentOpt,
-                $this = this, // selected zepto/jquery object
+                $this = this, // selected zepto/jquery input
                 settingsDefaults = {
                     data: [],
                     dataMethod: undefined,
@@ -55,7 +55,7 @@
                         left: $this.offset().left,
                         top: $this.offset().top + $this.height()
                     };
-                    $optionsContainerDiv.css('position', 'absolute').css('top', position.top).css('left', position.left).css('zIndex', 1000);
+                    $optionsContainerDiv.css('position', 'relative').css('top', position.top).css('left', position.left).css('zIndex', 1000);
                 }
                 // Configure $optionsContainerDiv
                 $optionsContainerDiv.addClass('autocomplete-options-container').addClass(settings.extraClass);  // Adds class autocomplete-options-container

@@ -79,7 +79,7 @@
             }
             function close() {
                 var $optionsContainerDiv = $this[0]._autoCompleteData.$optionsContainerDiv;
-                $optionsContainerDiv.close();
+                $optionsContainerDiv.hide();
                 $this.trigger('closed');
             }
             function onBlur() {

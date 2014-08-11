@@ -1,4 +1,5 @@
 var gulp = require('gulp'),
+    size = require('gulp-size'),
     rename = require('gulp-rename'),
     jshint = require('gulp-jshint'),
     uglify = require('gulp-uglify'),
@@ -15,9 +16,12 @@ gulp.task('jshint', function() {
 
 gulp.task('build', ['jshint'], function() {
     return gulp.src(path)
+        .pipe(size({title: '(original)'}))
         .pipe(rename('zepto.autocomplete.min.js'))
         .pipe(sourcemaps.init())
             .pipe(uglify())
+            .pipe(size({title: '(minified)'}))
+            .pipe(size({title: '(gzipped)', gzip: true}))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('.'));
 });

@@ -17,7 +17,7 @@
                     minLength: 1,
                     maxCount: Infinity,
                     extraClass: '',
-                    appendTo: '',
+                    appendTo: undefined,
                     position: true,
                     sort: function(data) {
                         // Skip sorting if data received from `dataMethod`
@@ -39,17 +39,19 @@
                     onOptionSelect: function(option) {
                         return option.toString(); // Returned value updates the input
                     },
-                    onBlur: function($optionsContainerDiv) {
-                        $optionsContainerDiv.hide();
+                    onBlur: function(closeCallback) {
+                        closeCallback();
                     }
                 },
                 storedData = $this[0]._autoCompleteData;
 
             settings = $.extend(settingsDefaults, settings);
+            // Disable `position` if appendTo
+            settings.position = (settings.appendTo)? false:settings.position;
 
             function createOptionsDiv() {
                 var position, $appendDiv, $optionsContainerDiv;
-                $optionsContainerDiv = $('<div>');
+                $optionsContainerDiv = $('<div>').css('display', 'none');
                 if(settings.position) {
                     position = {
                         left: $this.offset().left,
@@ -58,10 +60,9 @@
                     $optionsContainerDiv.css('position', 'relative').css('top', position.top).css('left', position.left).css('zIndex', 1000);
                 }
                 // Configure $optionsContainerDiv
-                $optionsContainerDiv.addClass('autocomplete-options-container').addClass(settings.extraClass);  // Adds class autocomplete-options-container
-                $this.attr('data-autocomplete', 'true');
-                $optionsContainerDiv.on('mousedown.autocomplete', 'div', chooseOption);
-                $optionsContainerDiv.hide();
+                $optionsContainerDiv.addClass('ac-options').addClass(settings.extraClass);  // Adds class ac-options
+                $this.attr('data-ac', 'true');
+                $optionsContainerDiv.on('mousedown.ac', 'div', chooseOption);
                 $appendDiv = (settings.appendTo)? $(settings.appendTo):$('body');
                 $appendDiv.append($optionsContainerDiv);
                 settings.data = settings.sort(settings.data);
@@ -71,15 +72,24 @@
                     $optionsContainerDiv: $optionsContainerDiv
                 };
             }
+            function open() {
+                var $optionsContainerDiv = $this[0]._autoCompleteData.$optionsContainerDiv;
+                $optionsContainerDiv.show();
+                $this.trigger('opened');
+            }
+            function close() {
+                var $optionsContainerDiv = $this[0]._autoCompleteData.$optionsContainerDiv;
+                $optionsContainerDiv.close();
+                $this.trigger('closed');
+            }
             function onBlur() {
-                var $optionsContainerDiv = $this[0]._autoCompleteData.$optionsContainerDiv,
-                    settings = $this[0]._autoCompleteData.settings;
-                settings.onBlur($optionsContainerDiv);
+                var settings = $this[0]._autoCompleteData.settings;
+                settings.onBlur(close);
             }
             function chooseOption(event, optIndex) {
                 var value, option,
                     settings = $this[0]._autoCompleteData.settings;
-                optIndex = optIndex || $(event.target).closest('.autocomplete-opt').attr('data-opt-index');
+                optIndex = optIndex || $(event.target).closest('.ac-opt').attr('data-opt-idx');
                 option = settings.data[optIndex];
                 value = settings.onOptionSelect(option);
                 if(value !== undefined) {
@@ -92,10 +102,10 @@
             }
             function changeCurrentOpt($other) {
                 if($currentOpt) {
-                    $currentOpt.removeClass('autocomplete-opt-curr');  // Removes class autocomplete-opt
+                    $currentOpt.removeClass('ac-opt-curr');  // Removes class ac-opt-curr
                 }
                 $currentOpt = $other;
-                $currentOpt.addClass('autocomplete-opt-curr');  // Adds class autocomplete-opt
+                $currentOpt.addClass('ac-opt-curr');  // Adds class ac-opt-curr
             }
             function computeOptions() {
                 var option,
@@ -108,7 +118,7 @@
                 $optionsContainerDiv.empty(); // No events on `options` (safe)
                 // Honor minLength
                 if(query.length<settings.minLength) {
-                    $optionsContainerDiv.hide();
+                    close();
                     return;
                 }
                 // Compute callback
@@ -118,16 +128,16 @@
                         option = data[i];
                         // Don't match if data received from `dataMethod`
                         if (settings.dataMethod instanceof Function || settings.matcher(query, option)) {
-                            // Adds class autocomplete-opt
-                            $optionDiv = $('<div class="autocomplete-opt"></div>');
-                            $optionDiv.attr('data-opt-index', i);
+                            // Adds class ac-opt
+                            $optionDiv = $('<div></div>').addClass('ac-opt');
+                            $optionDiv.attr('data-opt-idx', i);
                             $optionDiv.append(settings.renderOption(option));
                             $divs = $divs.add($optionDiv);
                         }
                     }
                     if ($divs.length>0) {
                         $optionsContainerDiv.append($divs);
-                        $optionsContainerDiv.show();
+                        open();
                     }
                 };
                 if(settings.dataMethod instanceof Function) {
@@ -147,7 +157,7 @@
                         } else {
                             prev = $currentOpt.prev();
                         }
-                        if(prev && prev.hasClass('autocomplete-opt')) {
+                        if(prev && prev.hasClass('ac-opt')) {
                             changeCurrentOpt(prev);
                         }
                         break;
@@ -158,13 +168,13 @@
                         } else {
                             next = $currentOpt.next();
                         }
-                        if(next && next.hasClass('autocomplete-opt')) {
+                        if(next && next.hasClass('ac-opt')) {
                             changeCurrentOpt(next);
                         }
                         break;
                     case 13:  // Return
                         if($optionsContainerDiv.css('display') !== 'none') {
-                            chooseOption(event, $currentOpt.attr('data-opt-index'));
+                            chooseOption(event, $currentOpt.attr('data-opt-idx'));
                         }
                         break;
                     default:
@@ -178,14 +188,14 @@
                 createOptionsDiv();
                 computeOptions();
                 return $this.each(function() {
-                    $this.bind('focus.autocomplete', computeOptions).bind('keyup.autocomplete', keyHandler).bind('blur.autocomplete', onBlur);
+                    $this.bind('focus.ac', computeOptions).bind('keyup.ac', keyHandler).bind('blur.ac', onBlur);
                 });
             }
         },
         destroy: function() {
             return this.each(function() {
                 var $this = $(this);
-                $this.unbind('.autocomplete');
+                $this.unbind('.ac');
                 $this[0]._autoCompleteData.$optionsContainerDiv.remove();
                 delete $this[0]._autoCompleteData;
             });
@@ -229,7 +239,7 @@
         } else if (typeof method === 'object' || !method) {
             return methods.init.apply(this, arguments);
         } else {
-            $.error(method + ' :: Not supported');
+            $.error(method + ': not-supported');
         }
     };
 })(Zepto || jQuery);

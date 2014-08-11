@@ -173,7 +173,7 @@
                         }
                         break;
                     case 13:  // Return
-                        if($optionsContainerDiv.css('display') !== 'none') {
+                        if($currentOpt && $optionsContainerDiv.css('display') !== 'none') {
                             chooseOption(event, $currentOpt.attr('data-opt-idx'));
                         }
                         break;

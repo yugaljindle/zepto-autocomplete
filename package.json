@@ -1,0 +1,24 @@
+{
+  "name": "zepto-autocomplete",
+  "version": "0.3.0",
+  "description": "Full featured autocomplete plugin native to zepto and works equally well with jquery",
+  "main": "zepto.autocomplete.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yugal/zepto-autocomplete.git"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.7",
+    "gulp-jshint": "^1.8.4",
+    "gulp-rename": "^1.2.0",
+    "gulp-sourcemaps": "^1.1.1",
+    "gulp-uglify": "^0.3.1",
+    "jshint-stylish": "^0.4.0"
+  },
+  "author": "Yugal Jindle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yugal/zepto-autocomplete/issues"
+  },
+  "homepage": "https://github.com/yugal/zepto-autocomplete"
+}

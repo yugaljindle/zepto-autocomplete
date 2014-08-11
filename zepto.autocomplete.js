@@ -174,7 +174,7 @@
             }
 
             // if not initialized
-            if (!storedData) {
+            if(!storedData) {
                 createOptionsDiv();
                 computeOptions();
                 return $this.each(function() {

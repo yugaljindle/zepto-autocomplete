@@ -9,6 +9,7 @@ $ bower install --save zepto-autocomplete
 
 ##Issues
 Discovered a bug? Please create an issue here on GitHub!
+
 https://github.com/yugal/zepto-autocomplete/issues
 
 ##Author
